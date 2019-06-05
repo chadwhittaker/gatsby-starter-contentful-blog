@@ -3,21 +3,21 @@ import { Link, graphql } from 'gatsby'
 
 import blogStyles from './styles/blog.module.scss'
 import Layout from '../components/Layout'
+import Head from '../components/Head'
 
 const BlogPage = ({ data }) => {
-  const blogs = data.allMarkdownRemark.edges
+  const blogs = data.allContentfulBlogPost.edges
 
   return (
     <Layout>
+      <Head title="Blog" />
       <h1>Blogs</h1>
       <div className={blogStyles.posts}>
         {blogs.map(({ node }) => (
-          <div key={node.frontmatter.title} className={blogStyles.post}>
-            <Link to={`/blog/${node.fields.slug}`}>
-              <h4>{node.frontmatter.title}</h4>
-              <p>
-                {node.frontmatter.author}, {node.frontmatter.date}
-              </p>
+          <div key={node.title} className={blogStyles.post}>
+            <Link to={`/blog/${node.slug}`}>
+              <h4>{node.title}</h4>
+              <p>{node.publishedDate}</p>
             </Link>
           </div>
         ))}
@@ -28,17 +28,12 @@ const BlogPage = ({ data }) => {
 
 export const query = graphql`
   query {
-    allMarkdownRemark {
+    allContentfulBlogPost(sort: { fields: publishedDate, order: DESC }) {
       edges {
         node {
-          frontmatter {
-            title
-            author
-            date
-          }
-          fields {
-            slug
-          }
+          title
+          slug
+          publishedDate(formatString: "MMMM Do, YYYY")
         }
       }
     }

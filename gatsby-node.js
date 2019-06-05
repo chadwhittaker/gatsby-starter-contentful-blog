@@ -2,24 +2,6 @@
 // go to the Docs to see more info on available API points
 const path = require('path') // this is a core node module for our use
 
-// onCreateNode runs when you create the server
-// you can create new nodes or create fields based on existing nodes
-module.exports.onCreateNode = ({ node, actions }) => {
-  const { createNode, createNodeField } = actions
-
-  // create slug for each blog
-  if (node.internal.type === 'MarkdownRemark') {
-    // 1. grab slug from filename
-    const slug = path.basename(node.fileAbsolutePath, '.md')
-    // 2. create node field with slug
-    createNodeField({
-      node,
-      name: 'slug',
-      value: slug,
-    })
-  }
-}
-
 module.exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions
 
@@ -29,12 +11,10 @@ module.exports.createPages = async ({ graphql, actions }) => {
   // 2. get markdown data (we only need the slug)
   const res = await graphql(`
     query {
-      allMarkdownRemark {
+      allContentfulBlogPost {
         edges {
           node {
-            fields {
-              slug
-            }
+            slug
           }
         }
       }
@@ -42,13 +22,13 @@ module.exports.createPages = async ({ graphql, actions }) => {
   `)
 
   // 3. create new page for each blog
-  res.data.allMarkdownRemark.edges.forEach(({ node }) => {
+  res.data.allContentfulBlogPost.edges.forEach(({ node }) => {
     createPage({
       component: blogTemplate,
-      path: `/blog/${node.fields.slug}`,
+      path: `/blog/${node.slug}`,
       // data you want to pass down to blog
       context: {
-        slug: node.fields.slug,
+        slug: node.slug,
       },
     })
   })

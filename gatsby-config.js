@@ -8,7 +8,7 @@
 module.exports = {
   /* Your site config here */
   siteMetadata: {
-    title: 'Mead Gatsby Bootcamp',
+    title: 'Great Gatsby Bootcamp',
     author: 'Chad Whittaker',
     description: `A starter blog demonstrating what Gatsby can do.`,
     // siteUrl: `https://gatsby-starter-blog-demo.netlify.com/`,
@@ -17,6 +17,7 @@ module.exports = {
     },
   },
   plugins: [
+    'gatsby-plugin-react-helmet',
     'gatsby-plugin-sass',
     {
       resolve: 'gatsby-source-filesystem',
@@ -40,6 +41,14 @@ module.exports = {
             },
           },
         ],
+      },
+    },
+    // to use contentful
+    {
+      resolve: 'gatsby-source-contentful',
+      options: {
+        spaceId: process.env.CONTENTFUL_SPACE_ID,
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
       },
     },
   ],
